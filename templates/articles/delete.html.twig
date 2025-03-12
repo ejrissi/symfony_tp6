@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Supprimer l'article{% endblock %}
+
+{% block body %}
+    <h1>Êtes-vous sûr de vouloir supprimer l'article "{{ article.nom }}" ?</h1>
+    <form method="POST" action="{{ path('delete_article', {'id': article.id}) }}">
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+        <a href="{{ path('article_list') }}" class="btn btn-secondary">Annuler</a>
+    </form>
+{% endblock %}

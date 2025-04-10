@@ -8,8 +8,7 @@
 # homepage:
 #   path: /
 #   controller: App\Controller\IndexController::home
-# config/routes.yaml
-# Vide ou bien juste ceci :
+
 
 controllers:
     resource: ../src/Controller/

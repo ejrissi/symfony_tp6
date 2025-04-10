@@ -1,10 +1,37 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter un Article{% endblock %}
+{% block title %}Ajouter Article{% endblock %}
 
 {% block body %}
-    <h1>Ajouter un Article</h1>
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Ajouter un article</h1>
+
+        <div class="p-4 border rounded bg-light shadow-sm">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}  <!-- Add novalidate here -->
+                <div class="mb-3">
+                    {{ form_row(form.Nom) }}
+                    {% if form.Nom.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.Nom.vars.errors %}
+                                <p>{{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.Prix) }}
+                    {% if form.Prix.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.Prix.vars.errors %}
+                                <p>{{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success mt-3">Créer</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

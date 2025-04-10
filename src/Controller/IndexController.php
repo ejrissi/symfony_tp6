@@ -1,5 +1,6 @@
 <?php
 namespace App\Controller;
+use App\Form\ArticleType;
 
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,39 +50,28 @@ class IndexController extends AbstractController
         return $this->render('articles/index.html.twig', ['articles' => $articles]);
     }
 
+    
     #[Route('/article/new', name: 'new_article', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $article = new Article();
-
-        $form = $this->createFormBuilder($article)
-            ->add('nom', TextType::class, [
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('prix', TextType::class, [
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Créer',
-                'attr' => ['class' => 'btn btn-success mt-3']
-            ])
-            ->getForm();
-
+    
+        // 💡 Utilise la classe ArticleType ici
+        $form = $this->createForm(ArticleType::class, $article);
+    
         $form->handleRequest($request);
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $article = $form->getData();
             $this->entityManager->persist($article);
             $this->entityManager->flush();
-
+    
             return $this->redirectToRoute('article_list');
         }
-
+    
         return $this->render('articles/new.html.twig', [
             'form' => $form->createView(),
         ]);
-
-
-
     }
 
     // #[Route('/article/{id}', name: 'article_show', methods: ['GET', 'POST'])]
@@ -114,43 +104,32 @@ class IndexController extends AbstractController
 
     // Add this function to your controller
 
-#[Route('/article/edit/{id}', name: 'edit_article', methods: ['GET', 'POST'])]
-public function edit(Request $request, int $id): Response
-{
-    // Fetch the article to edit
-    $article = $this->entityManager->getRepository(Article::class)->find($id);
+    #[Route('/article/edit/{id}', name: 'edit_article', methods: ['GET', 'POST'])]
+    public function edit(Request $request, int $id): Response
+    {
+        // Fetch the article to edit
+        $article = $this->entityManager->getRepository(Article::class)->find($id);
 
-    if (!$article) {
-        throw $this->createNotFoundException('Article not found');
+        if (!$article) {
+            throw $this->createNotFoundException('Article not found');
+        }
+
+        // Create the form to edit the article using ArticleType
+        $form = $this->createForm(ArticleType::class, $article);
+
+        $form->handleRequest($request);
+
+        // If the form is submitted and valid, persist changes to the article
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush(); // Update the article in the database
+            return $this->redirectToRoute('article_list'); // Redirect to the article list
+        }
+
+        // Render the edit form
+        return $this->render('articles/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
-
-    // Create the form to edit the article
-    $form = $this->createFormBuilder($article)
-        ->add('nom', TextType::class, [
-            'attr' => ['class' => 'form-control']
-        ])
-        ->add('prix', TextType::class, [
-            'attr' => ['class' => 'form-control']
-        ])
-        ->add('save', SubmitType::class, [
-            'label' => 'Modifier',
-            'attr' => ['class' => 'btn btn-success mt-3']
-        ])
-        ->getForm();
-
-    $form->handleRequest($request);
-
-    // If the form is submitted and valid, persist changes to the article
-    if ($form->isSubmitted() && $form->isValid()) {
-        $this->entityManager->flush(); // Update the article
-        return $this->redirectToRoute('article_list');
-    }
-
-    // Render the edit form
-    return $this->render('articles/edit.html.twig', [
-        'form' => $form->createView(),
-    ]);
-}
 
 
 #[Route('/article/delete/{id}', name: 'delete_article', methods: ['POST'])]

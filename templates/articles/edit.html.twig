@@ -6,15 +6,36 @@
     <div class="container mt-5">
         <h1 class="mb-4 text-center">Modifier l'article</h1>
 
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
         <div class="p-4 border rounded bg-light shadow-sm">
             {{ form_start(form) }}
             
+            {% if form_errors(form) %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form) }}
+                </div>
+            {% endif %}
+
             <div class="mb-3">
-                {{ form_row(form.Nom) }}
+                {{ form_label(form.Nom) }}
+                {{ form_widget(form.Nom, {'attr': {'class': 'form-control'}}) }}
+                {% if form_errors(form.Nom) %}
+                    <div class="text-danger">{{ form_errors(form.Nom) }}</div>
+                {% endif %}
             </div>
 
             <div class="mb-3">
-                {{ form_row(form.Prix) }}
+                {{ form_label(form.Prix) }}
+                {{ form_widget(form.Prix, {'attr': {'class': 'form-control', 'step': '0.01'}}) }}
+                {% if form_errors(form.Prix) %}
+                    <div class="text-danger">{{ form_errors(form.Prix) }}</div>
+                {% endif %}
             </div>
 
             <div class="text-center">

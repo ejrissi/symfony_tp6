@@ -10,6 +10,7 @@
                     <th>ID</th>
                     <th>Nom</th>
                     <th>Prix</th>
+                    <th>Catégorie</th> <!-- Nouvelle colonne pour afficher la catégorie -->
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -19,6 +20,13 @@
                         <td>{{ article.id }}</td>
                         <td>{{ article.nom }}</td>
                         <td>{{ article.prix }}</td>
+                        <td>
+                            {% if article.category %}
+                                {{ article.category.titre }}
+                            {% else %}
+                                Aucune catégorie
+                            {% endif %}
+                        </td> <!-- Afficher le titre de la catégorie ou un message alternatif -->
                         <td>
                             <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-dark">Détails</a>
                             <a href="{{ path('edit_article', {'id': article.id}) }}" class="btn btn-dark">Modifier</a>

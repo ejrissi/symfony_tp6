@@ -1,8 +1,9 @@
 <?php
 namespace App\Controller;
 use App\Form\ArticleType;
-
+use App\Form\CategoryType;
 use App\Entity\Article;
+use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route; // Use Attribute instead of Annotation
@@ -119,11 +120,12 @@ class IndexController extends AbstractController
 
         $form->handleRequest($request);
 
-        // If the form is submitted and valid, persist changes to the article
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->flush(); // Update the article in the database
-            return $this->redirectToRoute('article_list'); // Redirect to the article list
+            $this->entityManager->flush();
+            $this->addFlash('success', 'Article modifié avec succès.');
+            return $this->redirectToRoute('article_list');
         }
+        
 
         // Render the edit form
         return $this->render('articles/edit.html.twig', [
@@ -149,6 +151,29 @@ public function delete(Request $request, int $id): Response
 
     return $this->redirectToRoute('article_list');
 }
+
+
+#[Route('/category/newCat', name: 'new_category', methods: ['GET', 'POST'])]
+    public function newCategory(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $category = new Category();
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($category);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Catégorie ajoutée avec succès !');
+
+            return $this->redirectToRoute('new_category');
+        }
+
+        return $this->render('articles/newCategory.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
 
 
 

@@ -31,7 +31,14 @@ class Article
         value: 0,
         message: "Le prix doit être supérieur à zéro."
     )]
-    private ?float $Prix = null;  
+    private ?String $Prix = null;
+
+    #[ORM\ManyToOne(inversedBy: 'article')]
+    private ?Category $category = null;  
+
+
+
+    
 
     public function getId(): ?int
     {
@@ -50,14 +57,24 @@ class Article
         return $this;
     }
 
-    public function getPrix(): ?float 
+    public function getPrix(): ?string
     {
         return $this->Prix;
     }
-
-    public function setPrix(float $Prix): static  
+    public function setPrix(?string $Prix): static
     {
         $this->Prix = $Prix;
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
